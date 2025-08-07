@@ -15,4 +15,7 @@ kotlin {
 dependencies {
     implementation((project(":data")))
     implementation((project(":domain")))
+    implementation(libs.javax.inject.v1)
+    //Coroutines
+    implementation(libs.kotlin.coroutines)
 }

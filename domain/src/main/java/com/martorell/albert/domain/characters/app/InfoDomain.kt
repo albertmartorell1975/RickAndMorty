@@ -1,6 +1,6 @@
-package com.martorell.albert.domain.server
+package com.martorell.albert.domain.characters.app
 
-data class Info(
+data class InfoDomain(
     val count: Int,
     val next: String,
     val pages: Int,
