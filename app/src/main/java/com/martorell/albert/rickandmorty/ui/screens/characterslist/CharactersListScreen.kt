@@ -2,33 +2,25 @@ package com.martorell.albert.rickandmorty.ui.screens.characterslist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.martorell.albert.rickandmorty.R
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
+import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
 
 /**
  * To keep the CharactersListContent as stateless composable (so a composable that does not hold any state),
@@ -44,6 +36,7 @@ fun CharactersListScreen(
     goToDetail: () -> Unit
 ) {
 
+    val state = viewModel.state.collectAsState()
     val scrollState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(scrollState)
 
@@ -57,6 +50,7 @@ fun CharactersListScreen(
 
             // Scaffold's content
             CharactersListContent(
+                state = state,
                 modifier = Modifier.padding(innerPadding),
                 goToDetail = { goToDetail() }
             )
@@ -68,6 +62,7 @@ fun CharactersListScreen(
 
 @Composable
 fun CharactersListContent(
+    state: State<CharactersViewModel.UiState>,
     modifier: Modifier = Modifier,
     goToDetail: () -> Unit
 ) {
@@ -80,40 +75,26 @@ fun CharactersListContent(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center,
             ) {
-                Column(
+
+                LazyColumn(
                     modifier = modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(
-                        dimensionResource(R.dimen.padding_small),
-                        Alignment.CenterVertically
-                    ),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(innerPadding),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-
-                    Text(
-                        text = stringResource(R.string.character_name),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier.height(dimensionResource(R.dimen.standard_height)))
-
-                    Button(
-                        modifier = Modifier
-                            .widthIn(min = 200.dp)
-                            .height(dimensionResource(R.dimen.standard_height)),
-                        onClick = { goToDetail() }
-                    ) {
-                        Text(text = "Anar al detall")
+                    items(count = state.value.characters.size) { index ->
+                        CharacterItem(
+                            character = state.value.characters[index],
+                            clickOnDelete = {},
+                            clickOnRow = { goToDetail() }
+                        )
                     }
-
-                    Spacer(modifier.height(dimensionResource(R.dimen.standard_height)))
-
                 }
 
             }
+
+            if (state.value.loading) CircularProgressIndicatorCustom()
 
         }
     }

@@ -20,8 +20,8 @@ okhttpVer = "4.12.0"
 roomVer = "2.7.2"
 coilVersion = "3.1.0"
 javaxInjectVersion = "1"
-arrowVer = "2.1.0"
 kotlinCoroutinesVer = "1.10.2"
+constraintVersion = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,10 +57,10 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 #Coil
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilVersion" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilVersion" }
-#Either
-arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowVer" }
-arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrowVer" }
+#Coroutines
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinCoroutinesVer" }
+#Constraint layout
+constraint-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
