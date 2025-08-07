@@ -1,10 +1,8 @@
 package com.martorell.albert.rickandmorty.ui.screens.characterslist
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,13 +12,15 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
+import com.martorell.albert.rickandmorty.ui.screens.shared.ErrorScreen
+import kotlinx.coroutines.launch
 
 /**
  * To keep the CharactersListContent as stateless composable (so a composable that does not hold any state),
@@ -33,6 +33,7 @@ import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndic
 @Composable
 fun CharactersListScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
+    backHandlerAction: () -> Unit,
     goToDetail: () -> Unit
 ) {
 
@@ -52,7 +53,9 @@ fun CharactersListScreen(
             CharactersListContent(
                 state = state,
                 modifier = Modifier.padding(innerPadding),
-                goToDetail = { goToDetail() }
+                goToDetail = { goToDetail() },
+                backHandlerAction = { backHandlerAction() },
+                tryAgainAction = viewModel::downloadCharacters
             )
 
         }
@@ -64,38 +67,50 @@ fun CharactersListScreen(
 fun CharactersListContent(
     state: State<CharactersViewModel.UiState>,
     modifier: Modifier = Modifier,
-    goToDetail: () -> Unit
+    goToDetail: () -> Unit,
+    backHandlerAction: () -> Unit,
+    tryAgainAction: () -> Unit
 ) {
 
-    RickAndMortyComposeLayout {
+    val coroutineScope = rememberCoroutineScope()
+    if (state.value.error != null) {
 
-        Scaffold() { innerPadding ->
+        ErrorScreen(
+            customError = state.value.error,
+            setTryAgainState = {
+                coroutineScope.launch { tryAgainAction() }
+            },
+            onBackHandlerAction = backHandlerAction
+        )
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
+    } else {
+
+        state.value.characters.fold({
+            ErrorScreen(
+                customError = it, setTryAgainState = {
+                    coroutineScope.launch { tryAgainAction() }
+                },
+                onBackHandlerAction = backHandlerAction
+            )
+        }) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(count = state.value.characters.size) { index ->
-                        CharacterItem(
-                            character = state.value.characters[index],
-                            clickOnDelete = {},
-                            clickOnRow = { goToDetail() }
-                        )
-                    }
+                items(count = it.count()) { index ->
+                    CharacterItem(
+                        character = it[index],
+                        clickOnDelete = {},
+                        clickOnRow = { goToDetail() }
+                    )
                 }
-
             }
-
-            if (state.value.loading) CircularProgressIndicatorCustom()
-
         }
+
+        if (state.value.loading) CircularProgressIndicatorCustom()
+
     }
+
 }

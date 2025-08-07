@@ -22,4 +22,7 @@ dependencies{
     implementation(libs.retofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    //Either
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
 }

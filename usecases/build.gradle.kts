@@ -18,4 +18,7 @@ dependencies {
     implementation(libs.javax.inject.v1)
     //Coroutines
     implementation(libs.kotlin.coroutines)
+    //Either
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
 }

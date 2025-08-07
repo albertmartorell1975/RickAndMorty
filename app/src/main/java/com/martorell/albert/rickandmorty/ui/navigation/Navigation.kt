@@ -16,7 +16,14 @@ fun Navigation(navController: NavHostController) {
     ) {
 
         composable<Screens.CharactersList> {
-            CharactersListScreen(goToDetail = { navController.navigate(Screens.CharacterDetail) })
+            CharactersListScreen(
+                goToDetail = { navController.navigate(Screens.CharacterDetail) },
+                backHandlerAction = {
+                    navController.popBackStack(
+                        navController.graph.id,
+                        inclusive = true
+                    )
+                })
         }
 
         composable<Screens.CharacterDetail> {

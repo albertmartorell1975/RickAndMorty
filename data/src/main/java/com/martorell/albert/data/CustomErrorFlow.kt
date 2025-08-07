@@ -7,29 +7,22 @@ import java.io.IOException
  * This custom error class is meant for Flows approach
  */
 sealed class CustomErrorFlow {
-
     class Server(val code: Int) : CustomErrorFlow()
     data object Connectivity : CustomErrorFlow()
-    class Unknown(val message: String) : CustomErrorFlow()
+    class Unknown(message: String) : CustomErrorFlow()
 }
 
 fun Throwable.toCustomErrorFlow(): CustomErrorFlow =
 
     when (this) {
-
-        is IOException ->
-            CustomErrorFlow.Connectivity
-
-        is HttpException ->
-            CustomErrorFlow.Server(code())
-
-        else ->
-            CustomErrorFlow.Unknown(message ?: "")
+        is IOException -> CustomErrorFlow.Connectivity
+        is HttpException -> CustomErrorFlow.Server(code())
+        else -> CustomErrorFlow.Unknown(message ?: "")
     }
 
-
 /**
- * If everything works fine it will return null, else the customErrorFlow
+ * This is a util function that wraps the requests in order to convert tem into a CustomErro
+ * If there is an exception we convert it into a CustomError, else it returns null
  */
 inline fun <T> customFlowTryCatch(action: () -> T): CustomErrorFlow? = try {
     action()

@@ -2,4 +2,8 @@
     <string name="app_name">RickAndMorty</string>
     <string name="character_name">Character name</string>
     <string name="favourite_character">Favourite</string>
+    <string name="train_again">Try again</string>
+    <string name="connectivity_error">Internet not available</string>
+    <string name="server_error">Server not available</string>
+    <string name="unknow_error">Error unknow</string>
 </resources>

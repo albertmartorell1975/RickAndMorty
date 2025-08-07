@@ -22,6 +22,7 @@ coilVersion = "3.1.0"
 javaxInjectVersion = "1"
 kotlinCoroutinesVer = "1.10.2"
 constraintVersion = "1.1.1"
+arrowVer = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +62,9 @@ coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp"
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinCoroutinesVer" }
 #Constraint layout
 constraint-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintVersion" }
+#Either
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowVer" }
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrowVer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

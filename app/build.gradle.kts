@@ -81,5 +81,8 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     //Constraint layout
     implementation(libs.constraint.compose)
+    //Either
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
 
 }

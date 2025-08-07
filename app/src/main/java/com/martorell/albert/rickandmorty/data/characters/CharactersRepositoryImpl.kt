@@ -1,7 +1,7 @@
 package com.martorell.albert.rickandmorty.data.characters
 
-import com.martorell.albert.data.CustomErrorFlow
-import com.martorell.albert.data.customFlowTryCatch
+import com.martorell.albert.data.ResultResponse
+import com.martorell.albert.data.customTryCatch
 import com.martorell.albert.data.repositories.characters.CharactersRepository
 import com.martorell.albert.data.sources.characters.CharactersLocalDataSource
 import com.martorell.albert.data.sources.characters.CharactersServerDataSource
@@ -17,12 +17,13 @@ class CharactersRepositoryImpl(
     override val listOfCharacters: Flow<List<CharacterDomain>>
         get() = charactersLocalDataSource.loadCharacters()
 
-    override suspend fun getCharacters(): CustomErrorFlow? =
-        customFlowTryCatch {
+    override suspend fun downloadCharacters(): ResultResponse<List<CharacterDomain>> =
 
+        customTryCatch {
             // per provocar error fem que getCharacters retorni List<Characters>.
             val characters = charactersServerDataSource.getCharacters()
             charactersLocalDataSource.saveCharacters(characters.results)
+            characters.results.fromResponseToDomain()
 
         }
 

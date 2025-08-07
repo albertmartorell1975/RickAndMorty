@@ -2,11 +2,18 @@ package com.martorell.albert.rickandmorty.ui.screens.characterslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import arrow.core.right
+import com.martorell.albert.data.CustomError
+import com.martorell.albert.data.CustomErrorFlow
+import com.martorell.albert.data.ResultResponse
+import com.martorell.albert.data.toCustomErrorFlow
 import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.usecases.characters.CharactersInteractors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,29 +27,59 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
 
     data class UiState(
         val loading: Boolean = false,
-        val characters: List<CharacterDomain> = emptyList<CharacterDomain>()
+        val characters: ResultResponse<List<CharacterDomain>> = Either.Right(emptyList()),
+        val error: CustomError? = null,
+        val errorFlow: CustomErrorFlow? = null
     )
 
     init {
+        downloadCharacters()
+    }
 
-        _state.update {
-            it.copy(
-                loading = true
-            )
-        }
+    fun downloadCharacters() {
 
         viewModelScope.launch {
-            interactors.downloadCharactersUseCase.invoke()
-            interactors.getCharactersUseCase.invoke().collect { listOfCharacters ->
 
-                _state.update {
-                    it.copy(
+            _state.update {
+                it.copy(
+                    loading = true,
+                    error = null,
+                    errorFlow = null
+                )
+            }
+
+            val result = interactors.downloadCharactersUseCase.invoke()
+
+            result.fold({
+                _state.update { updatedState ->
+                    updatedState.copy(
                         loading = false,
-                        characters = listOfCharacters
+                        error = it
                     )
                 }
+            })
+            {
+                interactors.getCharactersUseCase.invoke().catch { cause ->
 
+                    _state.update {
+                        it.copy(
+                            loading = false,
+                            errorFlow = cause.toCustomErrorFlow()
+                        )
+                    }
+
+                }.collect { listOfCharacters ->
+
+                    _state.update {
+                        it.copy(
+                            loading = false,
+                            characters = listOfCharacters.right()
+                        )
+                    }
+
+                }
             }
+
         }
 
     }
