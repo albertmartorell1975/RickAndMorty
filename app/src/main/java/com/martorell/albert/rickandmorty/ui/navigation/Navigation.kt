@@ -27,7 +27,9 @@ fun Navigation(navController: NavHostController) {
         }
 
         composable<Screens.CharacterDetail> {
-            CharactersDetailScreen(backHandlerAction = { navController.popBackStack() })
+            CharactersDetailScreen(
+                navigationUpAction = { navController.popBackStack() },
+                backHandlerAction = { navController.popBackStack() })
         }
 
     }

@@ -14,9 +14,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.martorell.albert.domain.characters.app.CharacterDomain
+import com.martorell.albert.rickandmorty.R
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
@@ -46,7 +48,10 @@ fun CharactersListScreen(
 
         Scaffold(
             topBar = {
-                TopAppBarCustom(scrollBehavior = scrollBehavior)
+                TopAppBarCustom(
+                    scrollBehavior = scrollBehavior,
+                    title = stringResource(id = R.string.app_name)
+                )
             }
         ) { innerPadding ->
 

@@ -11,4 +11,5 @@
     <string name="character_specie">"Specie: "</string>
     <string name="character_status">"Status: "</string>
     <string name="character_type">"Type: "</string>
+    <string name="up_navigation">Go back</string>
 </resources>
