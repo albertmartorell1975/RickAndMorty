@@ -16,12 +16,15 @@ class CharactersRoomDataSource(db: RickAndMortyDatabase) : CharactersLocalDataSo
     override suspend fun saveCharacters(characters: List<CharacterResponse>) {
 
         withContext(Dispatchers.IO) {
-            charactersDao.saveCharacters(characters.fromServerToDB())
+            charactersDao.saveCharacters(characters.listFromServerToDB())
         }
 
     }
 
     override fun loadCharacters(): Flow<List<CharacterDomain>> =
-        charactersDao.getAll().map { it.fromDBToDomain() }
+        charactersDao.getAll().map { it.listFromDBToDomain() }
+
+    override suspend fun loadCharacterById(id: Int): CharacterDomain =
+        withContext(Dispatchers.IO) { charactersDao.getCharacterById(id).fromDBToDomain() }
 
 }

@@ -20,57 +20,16 @@ class CharactersRepositoryImpl(
     override suspend fun downloadCharacters(): ResultResponse<List<CharacterDomain>> =
 
         customTryCatch {
-            // per provocar error fem que getCharacters retorni List<Characters>.
             val characters = charactersServerDataSource.getCharacters()
             charactersLocalDataSource.saveCharacters(characters.results)
-            characters.results.fromResponseToDomain()
+            characters.results.listFromResponseToDomain()
+        }
 
+    override suspend fun loadCharacterById(id: Int): ResultResponse<CharacterDomain> =
+
+        customTryCatch {
+            val character = charactersLocalDataSource.loadCharacterById(id)
+            character
         }
 
 }
-
-/* override suspend fun loadCityCurrentWeather(
-     latitude: String,
-     longitude: String
- ): CustomErrorFlow? = customFlowTryCatch {
-
-     val cityServer = cityWeatherServerDataSource.getWeather(
-         lat = latitude,
-         lon = longitude
-     )
-
-     if (cityWeatherLocalDataSource.isEmpty()) {
-
-         cityWeatherLocalDataSource.addCity(cityServer)
-
-     } else {
-
-         cityWeatherLocalDataSource.makeAllCitiesAsNotJustAdded()
-         val city = cityWeatherLocalDataSource.loadCity(cityServer.name)
-         city.fold({
-             // In case of error does nothing
-
-         }) { cityInfo ->
-
-             if (cityInfo.name.isNotEmpty())
-
-                 cityWeatherLocalDataSource.updateCity(
-                     cityName = cityInfo.name,
-                     weatherDescription = cityInfo.weatherDescription,
-                     weatherIcon = cityInfo.weatherIcon,
-                     pressure = cityInfo.pressure,
-                     temperatureMax = cityInfo.temperatureMax,
-                     temperatureMin = cityInfo.temperatureMin,
-                     temperature = cityInfo.temperature
-                 )
-             else
-                 cityWeatherLocalDataSource.addCity(cityServer)
-         }
-
-     }
-
- }
-
-}
-
- */

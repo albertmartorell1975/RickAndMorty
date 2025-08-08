@@ -6,4 +6,9 @@
     <string name="connectivity_error">Internet not available</string>
     <string name="server_error">Server not available</string>
     <string name="unknow_error">Error unknow</string>
+    <string name="character_gender">"Gender: "</string>
+    <string name="character_title">"Name: "</string>
+    <string name="character_specie">"Specie: "</string>
+    <string name="character_status">"Status: "</string>
+    <string name="character_type">"Type: "</string>
 </resources>

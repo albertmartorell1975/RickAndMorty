@@ -84,7 +84,4 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
 
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
 }

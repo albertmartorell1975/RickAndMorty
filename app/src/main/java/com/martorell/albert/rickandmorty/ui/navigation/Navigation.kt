@@ -17,17 +17,17 @@ fun Navigation(navController: NavHostController) {
 
         composable<Screens.CharactersList> {
             CharactersListScreen(
-                goToDetail = { navController.navigate(Screens.CharacterDetail) },
+                goToDetail = { navController.navigate(Screens.CharacterDetail(id = it.id)) },
                 backHandlerAction = {
                     navController.popBackStack(
-                        navController.graph.id,
+                        navController.graph.startDestinationId,
                         inclusive = true
                     )
                 })
         }
 
         composable<Screens.CharacterDetail> {
-            CharactersDetailScreen()
+            CharactersDetailScreen(backHandlerAction = { navController.popBackStack() })
         }
 
     }

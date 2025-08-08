@@ -4,7 +4,7 @@ import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.domain.characters.server.CharacterResponse
 import com.martorell.albert.rickandmorty.db.model.CharacterDB
 
-fun List<CharacterResponse>.fromServerToDB(): List<CharacterDB> {
+fun List<CharacterResponse>.listFromServerToDB(): List<CharacterDB> {
 
     val characterDBList = mutableListOf<CharacterDB>()
 
@@ -28,7 +28,7 @@ fun List<CharacterResponse>.fromServerToDB(): List<CharacterDB> {
 
 }
 
-fun List<CharacterDB>.fromDBToDomain(): List<CharacterDomain> {
+fun List<CharacterDB>.listFromDBToDomain(): List<CharacterDomain> {
 
     val characterDomainList = mutableListOf<CharacterDomain>()
 
@@ -52,7 +52,7 @@ fun List<CharacterDB>.fromDBToDomain(): List<CharacterDomain> {
 
 }
 
-fun List<CharacterResponse>.fromResponseToDomain(): List<CharacterDomain> {
+fun List<CharacterResponse>.listFromResponseToDomain(): List<CharacterDomain> {
 
     val characterDomainList = mutableListOf<CharacterDomain>()
 
@@ -75,3 +75,17 @@ fun List<CharacterResponse>.fromResponseToDomain(): List<CharacterDomain> {
     return characterDomainList
 
 }
+
+fun CharacterDB.fromDBToDomain(): CharacterDomain =
+
+    CharacterDomain(
+        id = this.id,
+        name = this.name,
+        created = this.created,
+        gender = this.gender,
+        image = this.image,
+        species = this.species,
+        status = this.status,
+        type = this.type,
+        url = this.url
+    )

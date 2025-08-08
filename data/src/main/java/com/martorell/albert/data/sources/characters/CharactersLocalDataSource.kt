@@ -8,5 +8,5 @@ interface CharactersLocalDataSource {
 
     suspend fun saveCharacters(characters: List<CharacterResponse>)
     fun loadCharacters(): Flow<List<CharacterDomain>>
-
+    suspend fun loadCharacterById(id: Int): CharacterDomain
 }

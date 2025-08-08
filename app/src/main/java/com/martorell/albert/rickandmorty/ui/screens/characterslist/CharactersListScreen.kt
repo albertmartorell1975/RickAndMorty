@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 fun CharactersListScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
     backHandlerAction: () -> Unit,
-    goToDetail: () -> Unit
+    goToDetail: (CharacterDomain) -> Unit
 ) {
 
     val state = viewModel.state.collectAsState()
@@ -53,7 +54,7 @@ fun CharactersListScreen(
             CharactersListContent(
                 state = state,
                 modifier = Modifier.padding(innerPadding),
-                goToDetail = { goToDetail() },
+                goToDetail = goToDetail,
                 backHandlerAction = { backHandlerAction() },
                 tryAgainAction = viewModel::downloadCharacters
             )
@@ -67,7 +68,7 @@ fun CharactersListScreen(
 fun CharactersListContent(
     state: State<CharactersViewModel.UiState>,
     modifier: Modifier = Modifier,
-    goToDetail: () -> Unit,
+    goToDetail: (CharacterDomain) -> Unit,
     backHandlerAction: () -> Unit,
     tryAgainAction: () -> Unit
 ) {
@@ -103,13 +104,14 @@ fun CharactersListContent(
                     CharacterItem(
                         character = it[index],
                         clickOnDelete = {},
-                        clickOnRow = { goToDetail() }
+                        clickOnRow = { goToDetail(it[index]) }
                     )
                 }
             }
         }
 
-        if (state.value.loading) CircularProgressIndicatorCustom()
+        if (state.value.loading)
+            CircularProgressIndicatorCustom()
 
     }
 

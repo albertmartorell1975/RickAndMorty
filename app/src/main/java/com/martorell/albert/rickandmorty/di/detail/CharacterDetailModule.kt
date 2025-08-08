@@ -1,0 +1,18 @@
+package com.martorell.albert.rickandmorty.di.detail
+
+import com.martorell.albert.usecases.detail.CharacterDetailInteractors
+import com.martorell.albert.usecases.detail.LoadCharacterByIdUseCase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+
+@Module
+@InstallIn(ViewModelComponent::class)
+class CharacterDetailModule {
+
+    @Provides
+    fun providesCharacterDetailInteractors(
+        loadCharacterByIdUseCase: LoadCharacterByIdUseCase
+    ) = CharacterDetailInteractors(loadCharacterByIdUseCase = loadCharacterByIdUseCase)
+}

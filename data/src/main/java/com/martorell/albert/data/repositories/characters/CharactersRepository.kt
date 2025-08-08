@@ -8,5 +8,6 @@ interface CharactersRepository {
 
     val listOfCharacters: Flow<List<CharacterDomain>>
     suspend fun downloadCharacters(): ResultResponse<List<CharacterDomain>>
+    suspend fun loadCharacterById(id: Int): ResultResponse<CharacterDomain>
 
 }

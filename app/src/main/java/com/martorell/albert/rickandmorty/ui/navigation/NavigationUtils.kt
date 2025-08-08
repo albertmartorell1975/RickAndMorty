@@ -10,7 +10,7 @@ sealed class Screens {
     data object CharactersList : Screens()
 
     @Serializable
-    data object CharacterDetail : Screens()
+    data class CharacterDetail(val id: Int) : Screens()
 
 }
 

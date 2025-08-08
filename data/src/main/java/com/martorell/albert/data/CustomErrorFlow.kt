@@ -21,7 +21,7 @@ fun Throwable.toCustomErrorFlow(): CustomErrorFlow =
     }
 
 /**
- * This is a util function that wraps the requests in order to convert tem into a CustomErro
+ * This is a Utils function that wraps the requests in order to convert it into a CustomError
  * If there is an exception we convert it into a CustomError, else it returns null
  */
 inline fun <T> customFlowTryCatch(action: () -> T): CustomErrorFlow? = try {
