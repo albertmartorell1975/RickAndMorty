@@ -35,8 +35,8 @@ fun <T> ErrorScreen(
     val message = when (customError) {
         is CustomError.Connectivity -> stringResource(R.string.connectivity_error)
         is CustomError.Server -> stringResource(R.string.server_error)
-        is CustomError.Unknown -> stringResource(R.string.unknow_error)
-        else -> stringResource(R.string.unknow_error)
+        is CustomError.Unknown -> stringResource(R.string.unknown_error)
+        else -> stringResource(R.string.unknown_error)
     }
 
     Column(

@@ -20,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -125,7 +124,8 @@ fun CharacterDetailContent(
                 { characterInfo ->
 
                     DefaultTextView(
-                        contentFix = characterInfo?.name,
+                        contentFix = "",
+                        contentDynamic = characterInfo?.name.toString(),
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -135,7 +135,7 @@ fun CharacterDetailContent(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(characterInfo?.image).crossfade(true).build(),
-                        contentDescription = "El temps que fa",
+                        contentDescription = characterInfo?.name.toString(),
                         modifier = Modifier
                             .height(200.dp)
                             .width(
@@ -144,38 +144,73 @@ fun CharacterDetailContent(
                         contentScale = ContentScale.Crop
                     )
 
-                    DefaultTextView(
-                        contentFix = characterInfo?.gender,
-                        fontWeight = FontWeight.Bold
-                    )
+                    characterInfo?.type?.also { info ->
 
-                    DefaultTextView(
-                        contentFix = stringResource(R.string.character_title),
-                        contentDynamic = characterInfo?.name.toString()
-                    )
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_type),
+                            contentDynamic = if (info.isNotEmpty())
+                                info
+                            else
+                                stringResource(R.string.without_info)
+                        )
+                    } ?: run {
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_type),
+                            contentDynamic = stringResource(R.string.without_info),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                    DefaultTextView(
-                        contentFix = stringResource(R.string.character_type),
-                        contentDynamic = characterInfo?.type.toString(),
-                        colorDynamic = Color.Red
-                    )
+                    characterInfo?.gender?.also { info ->
 
-                    DefaultTextView(
-                        contentFix = stringResource(R.string.character_gender),
-                        contentDynamic = characterInfo?.gender.toString(),
-                        colorDynamic = Color.Blue
-                    )
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_gender),
+                            contentDynamic = if (info.isNotEmpty())
+                                info
+                            else
+                                stringResource(R.string.without_info)
+                        )
+                    } ?: run {
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_type),
+                            contentDynamic = stringResource(R.string.without_info),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                    DefaultTextView(
-                        contentFix = stringResource(R.string.character_specie),
-                        contentDynamic = characterInfo?.species.toString()
-                    )
+                    characterInfo?.species?.also { info ->
 
-                    DefaultTextView(
-                        contentFix = stringResource(R.string.character_status),
-                        contentDynamic = characterInfo?.status.toString(),
-                        colorDynamic = Color.Blue
-                    )
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_specie),
+                            contentDynamic = if (info.isNotEmpty())
+                                info
+                            else
+                                stringResource(R.string.without_info)
+                        )
+                    } ?: run {
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_type),
+                            contentDynamic = stringResource(R.string.without_info),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    characterInfo?.status?.also { info ->
+
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_status),
+                            contentDynamic = if (info.isNotEmpty())
+                                info
+                            else
+                                stringResource(R.string.without_info)
+                        )
+                    } ?: run {
+                        DefaultTextView(
+                            contentFix = stringResource(R.string.character_type),
+                            contentDynamic = stringResource(R.string.without_info),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
             }
@@ -185,4 +220,5 @@ fun CharacterDetailContent(
 
         }
     }
+
 }

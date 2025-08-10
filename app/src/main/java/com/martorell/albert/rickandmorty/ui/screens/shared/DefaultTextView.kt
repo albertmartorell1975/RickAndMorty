@@ -1,8 +1,9 @@
 package com.martorell.albert.rickandmorty.ui.screens.shared
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,8 +22,8 @@ import com.martorell.albert.rickandmorty.R
 fun DefaultTextView(
     fontSize: TextUnit = 25.sp,
     fontWeight: FontWeight = FontWeight.W400,
-    contentFix: String?,
-    contentDynamic: String = "",
+    contentFix: String,
+    contentDynamic: String,
     colorFix: Color = Color.DarkGray,
     colorDynamic: Color = Color.DarkGray,
 ) {
@@ -38,7 +39,9 @@ fun DefaultTextView(
                 }
             }
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dimensionResource(R.dimen.medium_spacer)),
         textAlign = TextAlign.Center,
         fontWeight = fontWeight,
         fontSize = fontSize

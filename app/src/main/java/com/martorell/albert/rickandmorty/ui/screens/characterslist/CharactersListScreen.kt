@@ -108,7 +108,6 @@ fun CharactersListContent(
                 items(count = it.count()) { index ->
                     CharacterItem(
                         character = it[index],
-                        clickOnDelete = {},
                         clickOnRow = { goToDetail(it[index]) }
                     )
                 }
