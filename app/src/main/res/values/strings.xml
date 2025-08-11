@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">RickAndMorty</string>
+    <string name="character_name">Character name</string>
+    <string name="favourite_character">Favourite</string>
+    <string name="train_again">Try again</string>
+    <string name="connectivity_error">Internet not available</string>
+    <string name="server_error">Server not available</string>
+    <string name="unknown_error">Error unknow</string>
+    <string name="character_gender">"Gender: "</string>
+    <string name="character_title">"Name: "</string>
+    <string name="character_specie">"Specie: "</string>
+    <string name="character_status">"Status: "</string>
+    <string name="character_type">"Type: "</string>
+    <string name="up_navigation">Go back</string>
+    <string name="without_info"> - </string>
+    <string name="favorite_dialog_title">Favorite character</string>
+    <string name="favorite_dialog_explanation">This functionality will be finished the next release</string>
+    <string name="favorite_dialog_accept">Accept</string>
 </resources>
