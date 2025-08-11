@@ -19,4 +19,12 @@ interface CharacterDao {
     @Query(value = "SELECT * FROM CharacterDB WHERE id = :id")
     suspend fun getCharacterById(id: Int): CharacterDB
 
+    @Query("SELECT COUNT(id) FROM CharacterDB")
+    suspend fun characterCount(): Int
+
+    @Query("SELECT id FROM CharacterDB WHERE favorite=true")
+    suspend fun getFavorites(): List<Int>
+
+    @Query("UPDATE CharacterDB SET favorite =:favorite WHERE id IN (:ids)")
+    suspend fun updateFavoriteStatusMultipleCharacters(ids:List<Int>, favorite: Boolean)
 }

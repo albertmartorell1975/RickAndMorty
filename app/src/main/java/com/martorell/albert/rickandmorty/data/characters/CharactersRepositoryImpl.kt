@@ -21,8 +21,33 @@ class CharactersRepositoryImpl(
 
         customTryCatch {
             val characters = charactersServerDataSource.getCharacters()
-            charactersLocalDataSource.saveCharacters(characters.results)
-            characters.results.listFromResponseToDomain()
+
+            if (charactersLocalDataSource.isEmpty()) {
+
+                charactersLocalDataSource.saveCharacters(characters.results)
+                characters.results.listFromResponseToDomain()
+
+            } else {
+
+                if (charactersLocalDataSource.getFavorites().isNotEmpty()) {
+
+                    val favoriteCharacters = charactersLocalDataSource.getFavorites()
+                    charactersLocalDataSource.saveCharacters(characters.results)
+                    charactersLocalDataSource.updateFavorite(
+                        charactersToUpdate = favoriteCharacters,
+                        favoriteStatus = true
+                    )
+                    characters.results.listFromResponseToDomain()
+
+                } else {
+
+                    charactersLocalDataSource.saveCharacters(characters.results)
+                    characters.results.listFromResponseToDomain()
+
+                }
+
+            }
+
         }
 
     override suspend fun loadCharacterById(id: Int): ResultResponse<CharacterDomain> =
@@ -31,5 +56,14 @@ class CharactersRepositoryImpl(
             val character = charactersLocalDataSource.loadCharacterById(id)
             character
         }
+
+    override suspend fun switchFavorite(characterDomain: CharacterDomain) {
+
+        charactersLocalDataSource.updateFavorite(
+            charactersToUpdate = listOf(characterDomain.id),
+            favoriteStatus = !characterDomain.favorite
+        )
+
+    }
 
 }

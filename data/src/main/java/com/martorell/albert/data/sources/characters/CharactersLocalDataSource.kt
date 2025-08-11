@@ -9,4 +9,7 @@ interface CharactersLocalDataSource {
     suspend fun saveCharacters(characters: List<CharacterResponse>)
     fun loadCharacters(): Flow<List<CharacterDomain>>
     suspend fun loadCharacterById(id: Int): CharacterDomain
+    suspend fun isEmpty(): Boolean
+    suspend fun getFavorites(): List<Int>
+    suspend fun updateFavorite(charactersToUpdate: List<Int>, favoriteStatus: Boolean)
 }

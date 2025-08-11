@@ -18,10 +18,12 @@ fun List<CharacterResponse>.listFromServerToDB(): List<CharacterDB> {
             species = character.species,
             status = character.status,
             type = character.type,
-            url = character.url
+            url = character.url,
+            favorite = false
         )
 
         characterDBList.add(characterDB)
+
     }
 
     return characterDBList
@@ -42,7 +44,8 @@ fun List<CharacterDB>.listFromDBToDomain(): List<CharacterDomain> {
             species = characterDB.species,
             status = characterDB.status,
             type = characterDB.type,
-            url = characterDB.url
+            url = characterDB.url,
+            favorite = characterDB.favorite
         )
 
         characterDomainList.add(characterDomain)
@@ -66,7 +69,8 @@ fun List<CharacterResponse>.listFromResponseToDomain(): List<CharacterDomain> {
             species = character.species,
             status = character.status,
             type = character.type,
-            url = character.url
+            url = character.url,
+            favorite = false
         )
 
         characterDomainList.add(characterDomain)
@@ -87,5 +91,6 @@ fun CharacterDB.fromDBToDomain(): CharacterDomain =
         species = this.species,
         status = this.status,
         type = this.type,
-        url = this.url
+        url = this.url,
+        favorite = this.favorite
     )

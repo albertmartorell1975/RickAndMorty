@@ -57,8 +57,8 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
                         error = it
                     )
                 }
-            })
-            {
+            }) {
+
                 interactors.getCharactersUseCase.invoke().catch { cause ->
 
                     _state.update {
@@ -81,7 +81,5 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
             }
 
         }
-
     }
-
 }

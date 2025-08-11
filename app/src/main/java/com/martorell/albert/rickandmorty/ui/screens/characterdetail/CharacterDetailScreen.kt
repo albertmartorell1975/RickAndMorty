@@ -1,5 +1,6 @@
 package com.martorell.albert.rickandmorty.ui.screens.characterdetail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,16 +11,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -63,7 +75,9 @@ fun CharactersDetailScreen(
         state = state,
         loadCharacterAction = viewModel::loadCharacter,
         navigationUpAction = { navigationUpAction() },
-        backHandlerAction = { backHandlerAction() }
+        backHandlerAction = { backHandlerAction() },
+        isCharacterFavoriteAction = viewModel::isCharacterFavorite,
+        onFavoriteClickedAction = viewModel::onFavoriteClicked
     )
 
 }
@@ -75,7 +89,9 @@ fun CharacterDetailContent(
     state: State<CharacterDetailViewModel.UiState>,
     loadCharacterAction: KSuspendFunction0<Unit>,
     navigationUpAction: () -> Unit,
-    backHandlerAction: () -> Unit
+    backHandlerAction: () -> Unit,
+    isCharacterFavoriteAction: KSuspendFunction0<Boolean>,
+    onFavoriteClickedAction: KSuspendFunction0<Unit>
 ) {
 
     val scrollState = rememberTopAppBarState()
@@ -107,10 +123,10 @@ fun CharacterDetailContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                state.value.character.fold({
-                    // the error to display
+                if (state.value.errorFlow != null) {
+
                     ErrorScreen(
-                        customError = it,
+                        customError = state.value.errorFlow,
                         setTryAgainState = {
                             coroutineScope.launch {
                                 loadCharacterAction()
@@ -118,14 +134,10 @@ fun CharacterDetailContent(
                         },
                         onBackHandlerAction = backHandlerAction
                     )
-
-                }
-                )
-                { characterInfo ->
-
+                } else {
                     DefaultTextView(
                         contentFix = "",
-                        contentDynamic = characterInfo?.name.toString(),
+                        contentDynamic = state.value.character?.name.toString(),
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -134,8 +146,8 @@ fun CharacterDetailContent(
 
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(characterInfo?.image).crossfade(true).build(),
-                        contentDescription = characterInfo?.name.toString(),
+                            .data(state.value.character?.image).crossfade(true).build(),
+                        contentDescription = state.value.character?.name.toString(),
                         modifier = Modifier
                             .height(200.dp)
                             .width(
@@ -144,7 +156,30 @@ fun CharacterDetailContent(
                         contentScale = ContentScale.Crop
                     )
 
-                    characterInfo?.type?.also { info ->
+                    var userClickedOnFab by remember { mutableIntStateOf(0) }
+                    val icon by produceState<ImageVector?>(
+                        initialValue = null,
+                        key1 = userClickedOnFab
+                    ) {
+                        value = if (isCharacterFavoriteAction()) {
+                            Icons.Default.Favorite
+                        } else
+                            Icons.Default.FavoriteBorder
+                    }
+
+                    icon?.run {
+                        Icon(
+                            imageVector = this,
+                            contentDescription = stringResource(R.string.favourite_character),
+                            modifier = Modifier.clickable {
+                                coroutineScope.launch { onFavoriteClickedAction() }
+                                userClickedOnFab += 1
+                            },
+                            tint = Color.Black
+                        )
+                    }
+
+                    state.value.character?.type?.also { info ->
 
                         DefaultTextView(
                             contentFix = stringResource(R.string.character_type),
@@ -161,7 +196,7 @@ fun CharacterDetailContent(
                         )
                     }
 
-                    characterInfo?.gender?.also { info ->
+                    state.value.character?.gender?.also { info ->
 
                         DefaultTextView(
                             contentFix = stringResource(R.string.character_gender),
@@ -178,7 +213,7 @@ fun CharacterDetailContent(
                         )
                     }
 
-                    characterInfo?.species?.also { info ->
+                    state.value.character?.species?.also { info ->
 
                         DefaultTextView(
                             contentFix = stringResource(R.string.character_specie),
@@ -195,7 +230,7 @@ fun CharacterDetailContent(
                         )
                     }
 
-                    characterInfo?.status?.also { info ->
+                    state.value.character?.status?.also { info ->
 
                         DefaultTextView(
                             contentFix = stringResource(R.string.character_status),
@@ -211,6 +246,7 @@ fun CharacterDetailContent(
                             fontWeight = FontWeight.Bold
                         )
                     }
+
                 }
 
             }
