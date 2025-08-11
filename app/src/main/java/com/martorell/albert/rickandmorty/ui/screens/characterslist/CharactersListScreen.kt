@@ -21,6 +21,7 @@ import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.R
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
+import com.martorell.albert.rickandmorty.ui.screens.shared.AlertDialogCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.ErrorScreen
 import kotlinx.coroutines.launch
@@ -61,7 +62,9 @@ fun CharactersListScreen(
                 modifier = Modifier.padding(innerPadding),
                 goToDetail = goToDetail,
                 backHandlerAction = { backHandlerAction() },
-                tryAgainAction = viewModel::downloadCharacters
+                tryAgainAction = viewModel::downloadCharacters,
+                showAlertDialogAction = viewModel::showAlertDialog,
+                hideAlertDialogAction = viewModel::hideAlertDialog
             )
 
         }
@@ -75,10 +78,23 @@ fun CharactersListContent(
     modifier: Modifier = Modifier,
     goToDetail: (CharacterDomain) -> Unit,
     backHandlerAction: () -> Unit,
-    tryAgainAction: () -> Unit
+    tryAgainAction: () -> Unit,
+    showAlertDialogAction: () -> Unit,
+    hideAlertDialogAction: () -> Unit
 ) {
 
     val coroutineScope = rememberCoroutineScope()
+
+    if (state.value.showAlertDialog) {
+
+        AlertDialogCustom(
+            title = R.string.favorite_dialog_title,
+            content = R.string.favorite_dialog_explanation,
+            actionText = R.string.favorite_dialog_accept,
+            onConfirmAction = { hideAlertDialogAction() },
+            onDismissAction = {})
+    }
+
     if (state.value.error != null) {
 
         ErrorScreen(
@@ -108,7 +124,8 @@ fun CharactersListContent(
                 items(count = it.count()) { index ->
                     CharacterItem(
                         character = it[index],
-                        clickOnRow = { goToDetail(it[index]) }
+                        clickOnRow = { goToDetail(it[index]) },
+                        onFavoriteAction = { showAlertDialogAction() }
                     )
                 }
             }

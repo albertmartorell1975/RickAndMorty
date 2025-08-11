@@ -29,7 +29,8 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
         val loading: Boolean = false,
         val characters: ResultResponse<List<CharacterDomain>> = Either.Right(emptyList()),
         val error: CustomError? = null,
-        val errorFlow: CustomErrorFlow? = null
+        val errorFlow: CustomErrorFlow? = null,
+        val showAlertDialog: Boolean = false
     )
 
     init {
@@ -44,7 +45,8 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
                 it.copy(
                     loading = true,
                     error = null,
-                    errorFlow = null
+                    errorFlow = null,
+                    showAlertDialog = false
                 )
             }
 
@@ -80,6 +82,24 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
                 }
             }
 
+        }
+    }
+
+    fun showAlertDialog(){
+
+        _state.update { updatedState ->
+            updatedState.copy(
+                showAlertDialog = true
+            )
+        }
+    }
+
+    fun hideAlertDialog(){
+
+        _state.update { updatedState ->
+            updatedState.copy(
+                showAlertDialog = false
+            )
         }
     }
 }

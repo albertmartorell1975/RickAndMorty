@@ -36,7 +36,8 @@ import com.martorell.albert.rickandmorty.utils.previewAsyncImageCoil
 fun CharacterItem(
     modifier: Modifier = Modifier,
     character: CharacterDomain,
-    clickOnRow: () -> Unit
+    clickOnRow: () -> Unit,
+    onFavoriteAction: () -> Unit
 ) {
 
     ConstraintLayout(
@@ -45,7 +46,7 @@ fun CharacterItem(
             .clickable { clickOnRow() }) {
 
         // Create references for the composable to constrain
-        val (favorite,name, specie, characterIcon) = createRefs()
+        val (favorite, name, specie, characterIcon) = createRefs()
 
         Text(
             modifier = Modifier
@@ -75,7 +76,9 @@ fun CharacterItem(
                     end.linkTo(parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
                 }
-                .clickable {  },
+                .clickable {
+                    onFavoriteAction()
+                },
             tint = Color.Black
         )
         AsyncImage(
@@ -119,7 +122,7 @@ fun CharacterItemPreview() {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
 
         // Create references for the composables to constrain
-        val (favorite,characterName, specie, characterIcon) = createRefs()
+        val (favorite, characterName, specie, characterIcon) = createRefs()
 
         Text(
             modifier = Modifier

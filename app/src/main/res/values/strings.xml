@@ -13,4 +13,7 @@
     <string name="character_type">"Type: "</string>
     <string name="up_navigation">Go back</string>
     <string name="without_info"> - </string>
+    <string name="favorite_dialog_title">Favorite character</string>
+    <string name="favorite_dialog_explanation">This functionality will be finished the next release</string>
+    <string name="favorite_dialog_accept">Accept</string>
 </resources>
