@@ -63,6 +63,9 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
 
                 interactors.getCharactersUseCase.invoke().catch { cause ->
 
+                    // _state.update allows the state.Value to be updated as atomic,
+                    // which it means that if there are more than 1 pending updating,
+                    // the next one will be executed once the current one has been finished
                     _state.update {
                         it.copy(
                             loading = false,

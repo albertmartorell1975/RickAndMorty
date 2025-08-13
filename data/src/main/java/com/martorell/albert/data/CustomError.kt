@@ -6,6 +6,7 @@ import arrow.core.right
 import retrofit2.HttpException
 import java.io.IOException
 
+// The typealias allow us the avoid type   Either<CustomError, T> each time we use it
 typealias ResultResponse<T> = Either<CustomError, T>
 
 /**
@@ -20,6 +21,7 @@ sealed class CustomError {
     class Unknown(val message: String) : CustomError()
 }
 
+//  Exception implementation
 fun Exception.toCustomError(): CustomError =
 
     when (this) {
@@ -28,6 +30,13 @@ fun Exception.toCustomError(): CustomError =
         else -> CustomError.Unknown(message ?: "")
     }
 
+/*
+We abstract the catch body because it will be always the same one.
+Given an action that returns a type T, returns ResultResponse<T>
+The inline reserverd words not only is to avoid issues with the suspend functions and performance,
+but also when the compiler builds this code, instead of call the function into the bytecode,
+it will substitute the function call by its itself code.
+ */
 inline fun <T> customTryCatch(action: () -> T): ResultResponse<T> = try {
     action().right()
 } catch (ex: IllegalArgumentException) {
