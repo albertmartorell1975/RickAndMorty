@@ -4,7 +4,7 @@ import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.domain.characters.server.CharacterResponse
 import com.martorell.albert.rickandmorty.db.model.CharacterDB
 
-fun List<CharacterResponse>.listFromServerToDB(): List<CharacterDB> {
+fun List<CharacterResponse>.listFromServerToDB(page:Int): List<CharacterDB> {
 
     val characterDBList = mutableListOf<CharacterDB>()
 
@@ -19,7 +19,8 @@ fun List<CharacterResponse>.listFromServerToDB(): List<CharacterDB> {
             status = character.status,
             type = character.type,
             url = character.url,
-            favorite = false
+            favorite = false,
+            page = page
         )
 
         characterDBList.add(characterDB)

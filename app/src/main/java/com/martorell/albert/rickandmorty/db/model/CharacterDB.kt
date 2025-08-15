@@ -15,5 +15,6 @@ data class CharacterDB(
     val status: String,
     val type: String,
     val url: String,
-    val favorite: Boolean
+    val favorite: Boolean,
+    val page: Int = 1
 )
