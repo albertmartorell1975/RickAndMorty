@@ -22,9 +22,8 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
 
     data class UiState(
         val loading: Boolean = false,
-        val showAlertDialog: Boolean = false,
         val charactersPaging: PagingData<CharacterDomain>? = null,
-        val errorMediator: Boolean = false
+        val errorPaging: Boolean = false
     )
 
     var charactersPagingDataFlow: Flow<PagingData<CharacterDomain>> =
@@ -36,27 +35,15 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
         _state.update {
             it.copy(
                 loading = false,
-                errorMediator = error
+                errorPaging = error
             )
         }
     }
 
-    fun showAlertDialog() {
+    suspend fun onFavoriteClicked(character: CharacterDomain) {
 
-        _state.update { updatedState ->
-            updatedState.copy(
-                showAlertDialog = true
-            )
-        }
-    }
+        interactors.switchFavoriteUseCase.invoke(character)
 
-    fun hideAlertDialog() {
-
-        _state.update { updatedState ->
-            updatedState.copy(
-                showAlertDialog = false
-            )
-        }
     }
 
 }

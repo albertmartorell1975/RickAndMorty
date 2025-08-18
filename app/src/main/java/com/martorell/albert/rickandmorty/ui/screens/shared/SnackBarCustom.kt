@@ -27,7 +27,8 @@ fun SnackbarHostState.SnackBarCustom(
     coroutineScope: CoroutineScope,
     performAction: () -> Unit,
     performDismissed: () -> Unit,
-    vararg key: Any
+    vararg key: Any,
+    duration: SnackbarDuration = SnackbarDuration.Long
 ) {
 
     val titleText = LocalContext.current.getText(title).toString()
@@ -39,7 +40,7 @@ fun SnackbarHostState.SnackBarCustom(
         coroutineScope.launch {
 
             val result = this@SnackBarCustom.showSnackbar(
-                duration = SnackbarDuration.Long,
+                duration = duration,
                 message = titleText,
                 actionLabel = actionText
             )

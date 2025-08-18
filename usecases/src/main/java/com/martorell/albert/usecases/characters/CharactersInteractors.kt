@@ -1,7 +1,8 @@
 package com.martorell.albert.usecases.characters
 
+import com.martorell.albert.usecases.detail.SwitchFavoriteUseCase
+
 data class CharactersInteractors(
-    val downloadCharactersUseCase: DownloadCharactersUseCase,
-    val getCharactersUseCase: GetCharactersUseCase,
-    val getPagingCharactersUseCase: GetPagingCharactersUseCase
+    val getPagingCharactersUseCase: GetPagingCharactersUseCase,
+    val switchFavoriteUseCase: SwitchFavoriteUseCase
 )

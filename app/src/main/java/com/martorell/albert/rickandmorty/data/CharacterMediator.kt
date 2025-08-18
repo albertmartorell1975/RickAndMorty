@@ -5,12 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import coil3.network.HttpException
 import com.martorell.albert.data.sources.characters.CharactersServerDataSource
 import com.martorell.albert.rickandmorty.data.characters.listFromServerToDB
 import com.martorell.albert.rickandmorty.db.RickAndMortyDatabase
 import com.martorell.albert.rickandmorty.db.model.CharacterDB
-import okio.IOException
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -19,7 +19,7 @@ class CharacterMediator @Inject constructor(
     private val serverDataSource: CharactersServerDataSource
 ) : RemoteMediator<Int, CharacterDB>() {
 
-    var listOfFavorites :List<Int> = emptyList()
+    var listOfFavorites: List<Int> = emptyList()
 
     override suspend fun load(
         loadType: LoadType,
@@ -33,7 +33,7 @@ class CharacterMediator @Inject constructor(
             val loadKey = when (loadType) {
 
                 LoadType.APPEND -> {
-                    // RETRIEVE NEXT OFFSET FROM DATABASE
+                    // Retrieve next offset from database
                     val lastItem = state.lastItemOrNull()
                     if (lastItem == null) {
                         1
@@ -100,7 +100,7 @@ class CharacterMediator @Inject constructor(
 
             }
 
-            // CHECK IF END OF PAGINATION REACHED
+            // Check if end of pagination reached
             MediatorResult.Success(endOfPaginationReached = characters.results.size < state.config.pageSize)
 
         } catch (e: IOException) {

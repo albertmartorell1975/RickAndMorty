@@ -7,14 +7,14 @@ import com.martorell.albert.data.ResultResponse
 import com.martorell.albert.data.customTryCatch
 import com.martorell.albert.data.repositories.characters.CharactersRepository
 import com.martorell.albert.data.sources.characters.CharactersLocalDataSource
-import com.martorell.albert.data.sources.characters.CharactersServerDataSource
 import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.db.model.CharacterDB
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class CharactersRepositoryImpl(
-    private val charactersServerDataSource: CharactersServerDataSource,
     private val charactersLocalDataSource: CharactersLocalDataSource,
     private val characterPager: Pager<Int, CharacterDB>
 ) :
@@ -23,9 +23,8 @@ class CharactersRepositoryImpl(
     override val listOfCharacters: Flow<List<CharacterDomain>>
         get() = charactersLocalDataSource.loadCharacters()
 
-    override fun loadPagingAll(): Flow<PagingData<CharacterDomain>> =
-
-        characterPager.flow.map { pagingData ->
+    override fun loadAll(): Flow<PagingData<CharacterDomain>> =
+        characterPager.flow.flowOn(Dispatchers.IO).map { pagingData ->
             pagingData.map { it.fromDBToDomain() }
         }
 

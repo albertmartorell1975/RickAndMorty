@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -32,11 +32,12 @@ import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.R
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
-import com.martorell.albert.rickandmorty.ui.screens.shared.AlertDialogCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.ErrorScreen
 import com.martorell.albert.rickandmorty.ui.screens.shared.SnackBarCustom
+import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
+import kotlin.reflect.KSuspendFunction1
 
 /**
  * To keep the CharactersListContent as stateless composable (so a composable that does not hold any state),
@@ -61,22 +62,20 @@ fun CharactersListScreen(
         goToDetail = goToDetail,
         backHandlerAction = { backHandlerAction() },
         tryAgainAction = viewModel::setErrorCharacter,
-        showAlertDialogAction = viewModel::showAlertDialog,
-        hideAlertDialogAction = viewModel::hideAlertDialog,
+        onFavoriteClickedAction = viewModel::onFavoriteClicked,
         lazyPagingItems = charactersPagingItems
     )
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagingApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersListContent(
     state: State<CharactersViewModel.UiState>,
     modifier: Modifier = Modifier,
     goToDetail: (CharacterDomain) -> Unit,
     backHandlerAction: () -> Unit,
-    showAlertDialogAction: () -> Unit,
-    hideAlertDialogAction: () -> Unit,
+    onFavoriteClickedAction: KSuspendFunction1<CharacterDomain, Unit>,
     lazyPagingItems: LazyPagingItems<CharacterDomain>,
     tryAgainAction: KFunction1<Boolean, Unit>
 ) {
@@ -109,7 +108,7 @@ fun CharactersListContent(
                 if (mediatorState?.refresh is LoadState.Error || mediatorState?.append is LoadState.Error)
                     tryAgainAction(true)
 
-                if (state.value.errorMediator) {
+                if (state.value.errorPaging) {
 
                     if (lazyPagingItems.itemCount > 0) {
 
@@ -117,14 +116,23 @@ fun CharactersListContent(
                             title = R.string.title_error_characters_snack_bar,
                             action = R.string.action_error_characters_snack_bar,
                             key = arrayOf(
-                                state.value.errorMediator
+                                state.value.errorPaging
                             ),
                             coroutineScope = coroutineScope,
                             performAction = {
                                 tryAgainAction(false)
                                 lazyPagingItems.retry()
                             },
-                            performDismissed = {})
+                            performDismissed = {},
+                            duration = SnackbarDuration.Indefinite
+                        )
+
+                        DisplayItems(
+                            modifier = modifier,
+                            lazyPagingItems = lazyPagingItems,
+                            goToDetail = goToDetail,
+                            onFavoriteClickedAction = onFavoriteClickedAction
+                        )
 
                     } else {
 
@@ -140,45 +148,12 @@ fun CharactersListContent(
 
                 } else {
 
-                    if (state.value.showAlertDialog) {
-
-                        AlertDialogCustom(
-                            title = R.string.favorite_dialog_title,
-                            content = R.string.favorite_dialog_explanation,
-                            actionText = R.string.favorite_dialog_accept,
-                            onConfirmAction = { hideAlertDialogAction() },
-                            onDismissAction = {})
-                    } else {
-
-                        LazyColumn(
-                            modifier = modifier
-                                .fillMaxSize(),
-                            contentPadding = PaddingValues(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-
-                            items(
-                                count = lazyPagingItems.itemCount,
-                                key = lazyPagingItems.itemKey { it.id },
-                            ) { index ->
-                                val character = lazyPagingItems[index]
-                                if (character != null) {
-                                    CharacterItem(
-                                        character = character,
-                                        clickOnRow = { goToDetail(character) },
-                                        onFavoriteAction = { showAlertDialogAction() }
-                                    )
-                                }
-                            }
-                            //item {
-                            //    if (lazyPagingItems.loadState.append is LoadState.Loading) {
-                            //        CircularProgressIndicatorCustom()
-                            //    }
-                            //}
-
-                        }
-
-                    }
+                    DisplayItems(
+                        modifier = modifier,
+                        lazyPagingItems = lazyPagingItems,
+                        goToDetail = goToDetail,
+                        onFavoriteClickedAction = onFavoriteClickedAction
+                    )
 
                 }
 
@@ -191,4 +166,42 @@ fun CharactersListContent(
 
     }
 
+}
+
+@Composable
+private fun DisplayItems(
+    modifier: Modifier,
+    lazyPagingItems: LazyPagingItems<CharacterDomain>,
+    goToDetail: (CharacterDomain) -> Unit,
+    onFavoriteClickedAction: KSuspendFunction1<CharacterDomain, Unit>
+) {
+
+    val coroutineScope = rememberCoroutineScope()
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+
+        items(
+            count = lazyPagingItems.itemCount,
+            key = lazyPagingItems.itemKey { it.id },
+        ) { index ->
+            val character = lazyPagingItems[index]
+            if (character != null) {
+                CharacterItem(
+                    character = character,
+                    clickOnRow = { goToDetail(character) },
+                    onFavoriteAction = {
+                        coroutineScope.launch {
+                            onFavoriteClickedAction.invoke(
+                                character
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
 }

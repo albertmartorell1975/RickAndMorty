@@ -10,6 +10,6 @@ interface CharactersRepository {
     val listOfCharacters: Flow<List<CharacterDomain>>
     suspend fun loadCharacterById(id: Int): ResultResponse<CharacterDomain>
     suspend fun switchFavorite(characterDomain: CharacterDomain)
-    fun loadPagingAll(): Flow<PagingData<CharacterDomain>>
+    fun loadAll(): Flow<PagingData<CharacterDomain>>
 
 }
