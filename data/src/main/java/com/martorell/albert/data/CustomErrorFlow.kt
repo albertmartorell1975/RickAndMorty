@@ -5,6 +5,8 @@ import java.io.IOException
 
 /**
  * This custom error class is meant for Flows approach
+ * This sealed class contains the potential errors.
+ * They can grow up as the apps goes progress
  */
 sealed class CustomErrorFlow {
     class Server(val code: Int) : CustomErrorFlow()
@@ -12,6 +14,9 @@ sealed class CustomErrorFlow {
     class Unknown(message: String) : CustomErrorFlow()
 }
 
+/**
+ * This function converts a Throwable into an Error
+ */
 fun Throwable.toCustomErrorFlow(): CustomErrorFlow =
 
     when (this) {
@@ -21,7 +26,7 @@ fun Throwable.toCustomErrorFlow(): CustomErrorFlow =
     }
 
 /**
- * This is a Utils function that wraps the requests in order to convert it into a CustomError
+ * This is a Utils function that wraps the requests in order to convert the Exceptions into a CustomError
  * If there is an exception we convert it into a CustomError, else it returns null
  */
 inline fun <T> customFlowTryCatch(action: () -> T): CustomErrorFlow? = try {

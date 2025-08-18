@@ -16,4 +16,6 @@
     <string name="favorite_dialog_title">Favorite character</string>
     <string name="favorite_dialog_explanation">This functionality will be finished the next release</string>
     <string name="favorite_dialog_accept">Accept</string>
+    <string name="title_error_characters_snack_bar">There was an error loading characters</string>
+    <string name="action_error_characters_snack_bar">Accept</string>
 </resources>

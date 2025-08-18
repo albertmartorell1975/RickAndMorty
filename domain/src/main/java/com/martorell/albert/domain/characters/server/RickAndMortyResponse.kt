@@ -1,6 +1,6 @@
 package com.martorell.albert.domain.characters.server
 
-data class ResultResponse(
+data class RickAndMortyResponse(
     val info: InfoResponse,
     val results: List<CharacterResponse>
 )

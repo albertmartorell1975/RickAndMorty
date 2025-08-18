@@ -22,6 +22,7 @@ javaxInjectVersion = "1"
 kotlinCoroutinesVer = "1.10.2"
 constraintVersion = "1.1.1"
 arrowVer = "2.1.0"
+pagingVer = "3.3.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +54,8 @@ logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-intercep
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVer" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVer" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVer" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "roomVer" }
+
 #Coil
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilVersion" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilVersion" }
@@ -63,6 +66,12 @@ constraint-compose = { group = "androidx.constraintlayout", name = "constraintla
 #Either
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowVer" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrowVer" }
+#Paging
+#it provides some intermediaries between our paging data flow and UI
+paging-runtime = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "pagingVer" }
+#Allow us to use PagingData in a pure Kotlin layer where we have no dependency on any Android component
+paging-commons = { group = "androidx.paging", name = "paging-common", version.ref = "pagingVer" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingVer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
