@@ -11,6 +11,7 @@ import com.martorell.albert.rickandmorty.data.characters.CharactersRepositoryImp
 import com.martorell.albert.rickandmorty.data.characters.CharactersRoomDataSource
 import com.martorell.albert.rickandmorty.db.RickAndMortyDatabase
 import com.martorell.albert.rickandmorty.db.model.CharacterDB
+import com.martorell.albert.rickandmorty.utils.Constants.PAGING_ITEMS_PER_PAGE
 import com.martorell.albert.usecases.characters.CharactersInteractors
 import com.martorell.albert.usecases.characters.GetPagingCharactersUseCase
 import com.martorell.albert.usecases.detail.SwitchFavoriteUseCase
@@ -57,15 +58,17 @@ class CharactersModule {
     ): Pager<Int, CharacterDB> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20
+                // the number of items for each page
+                pageSize = PAGING_ITEMS_PER_PAGE
             ),
             remoteMediator = CharacterMediator(
                 database = database,
                 serverDataSource = serverDataSource
             ),
             pagingSourceFactory = {
+                //this is the single source of truth
                 database.charactersDao().getAllPaging()
-            },
+            }
         )
     }
 
