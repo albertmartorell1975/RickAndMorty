@@ -4,15 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.martorell.albert.data.CustomErrorFlow
-import com.martorell.albert.data.toCustomErrorFlow
 import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.ui.navigation.Screens
 import com.martorell.albert.usecases.detail.CharacterDetailInteractors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +28,7 @@ class CharacterDetailViewModel @Inject constructor(
     data class UiState(
         val loading: Boolean = false,
         val character: CharacterDomain? = null,
-        val errorFlow: CustomErrorFlow? = null
+        val error: Boolean = false
     )
 
     init {
@@ -50,27 +47,22 @@ class CharacterDetailViewModel @Inject constructor(
             )
         }
 
-        interactors.getCharactersUseCase.invoke().catch { cause ->
-
+        interactors.loadCharacterByIdUseCase.invoke(characterId).fold({
             _state.update {
                 it.copy(
                     loading = false,
-                    errorFlow = cause.toCustomErrorFlow()
+                    error = true
                 )
             }
-
-        }.collect { listOfCharacters ->
-
-            val currentCharacter = listOfCharacters.find { it.id == characterId }
-
+        }) { currentCharacter ->
             _state.update {
                 it.copy(
                     loading = false,
                     character = currentCharacter
                 )
             }
-
         }
+
     }
 
     suspend fun isCharacterFavorite(): Boolean {

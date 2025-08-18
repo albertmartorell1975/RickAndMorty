@@ -25,4 +25,6 @@ dependencies{
     //Either
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
+    //Paging
+    implementation(libs.paging.commons)
 }

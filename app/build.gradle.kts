@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    //androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -75,6 +74,7 @@ dependencies {
     //Room (the below order is mandatory)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
+    implementation(libs.room.paging)
     ksp(libs.room.compiler)
     //Coil
     implementation(libs.coil.compose)
@@ -84,5 +84,8 @@ dependencies {
     //Either
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
+    //Paging
+    implementation(libs.paging.compose)
+    implementation(libs.paging.runtime)
 
 }

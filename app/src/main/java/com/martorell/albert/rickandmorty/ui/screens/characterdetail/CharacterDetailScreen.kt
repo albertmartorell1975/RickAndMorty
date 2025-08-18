@@ -123,10 +123,10 @@ fun CharacterDetailContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                if (state.value.errorFlow != null) {
+                if (state.value.error) {
 
                     ErrorScreen(
-                        customError = state.value.errorFlow,
+                        customError = state.value.error,
                         setTryAgainState = {
                             coroutineScope.launch {
                                 loadCharacterAction()
