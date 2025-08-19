@@ -23,7 +23,8 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
     data class UiState(
         val loading: Boolean = false,
         val charactersPaging: PagingData<CharacterDomain>? = null,
-        val errorPaging: Boolean = false
+        val errorPaging: Boolean = false,
+        val closeScreen: Boolean = false
     )
 
     var charactersPagingDataFlow: Flow<PagingData<CharacterDomain>> =
@@ -43,6 +44,18 @@ class CharactersViewModel @Inject constructor(private val interactors: Character
     suspend fun onFavoriteClicked(character: CharacterDomain) {
 
         interactors.switchFavoriteUseCase.invoke(character)
+
+    }
+
+    fun userClickedOnCloseScreen() {
+
+        _state.update {
+            it.copy(
+                loading = false,
+                errorPaging = false,
+                closeScreen = true
+            )
+        }
 
     }
 

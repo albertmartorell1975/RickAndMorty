@@ -1,5 +1,6 @@
 package com.martorell.albert.rickandmorty.ui.screens.characterslist
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,7 +51,6 @@ import kotlin.reflect.KSuspendFunction1
 @Composable
 fun CharactersListScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
-    backHandlerAction: () -> Unit,
     goToDetail: (CharacterDomain) -> Unit
 ) {
 
@@ -60,12 +60,11 @@ fun CharactersListScreen(
     CharactersListContent(
         state = state,
         goToDetail = goToDetail,
-        backHandlerAction = { backHandlerAction() },
         tryAgainAction = viewModel::setErrorCharacter,
         onFavoriteClickedAction = viewModel::onFavoriteClicked,
-        lazyPagingItems = charactersPagingItems
+        lazyPagingItems = charactersPagingItems,
+        closeScreenAction = viewModel::userClickedOnCloseScreen
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,10 +73,10 @@ fun CharactersListContent(
     state: State<CharactersViewModel.UiState>,
     modifier: Modifier = Modifier,
     goToDetail: (CharacterDomain) -> Unit,
-    backHandlerAction: () -> Unit,
     onFavoriteClickedAction: KSuspendFunction1<CharacterDomain, Unit>,
     lazyPagingItems: LazyPagingItems<CharacterDomain>,
-    tryAgainAction: KFunction1<Boolean, Unit>
+    tryAgainAction: KFunction1<Boolean, Unit>,
+    closeScreenAction: () -> Unit
 ) {
 
     val scrollState = rememberTopAppBarState()
@@ -107,6 +106,9 @@ fun CharactersListContent(
 
                 if (mediatorState?.refresh is LoadState.Error || mediatorState?.append is LoadState.Error)
                     tryAgainAction(true)
+
+                if (state.value.closeScreen)
+                    LocalActivity.current?.finish()
 
                 if (state.value.errorPaging) {
 
@@ -142,7 +144,7 @@ fun CharactersListContent(
                                 tryAgainAction(false)
                                 lazyPagingItems.retry()
                             },
-                            onBackHandlerAction = backHandlerAction
+                            onBackHandlerAction = closeScreenAction
                         )
                     }
 
