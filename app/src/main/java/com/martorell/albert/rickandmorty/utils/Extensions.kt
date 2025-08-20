@@ -1,9 +1,12 @@
 package com.martorell.albert.rickandmorty.utils
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
@@ -72,3 +75,17 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
 val previewAsyncImageCoil = AsyncImagePreviewHandler {
     ColorImage(Color.Green.toArgb())
 }
+
+/**
+ * Its goal is to allow us to display an image for the preview mode.
+ * It must be execute it in the Coil.AsyncImage's error property
+ */
+@Composable
+fun debugPlaceholder(@DrawableRes debugPreview: Int) =
+
+    //true it means it is preview mode
+    if (LocalInspectionMode.current) {
+        painterResource(id = debugPreview)
+    } else {
+        null
+    }
