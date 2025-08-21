@@ -1,10 +1,13 @@
 package com.martorell.albert.rickandmorty.ui.screens.characterslist
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -13,18 +16,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -35,31 +36,37 @@ import com.martorell.albert.rickandmorty.utils.debugPlaceholder
 
 @Composable
 fun CharacterItem(
-    modifier: Modifier = Modifier,
     character: CharacterDomain,
     clickOnRow: () -> Unit,
     onFavoriteAction: () -> Unit
 ) {
 
-    ConstraintLayout(
-        modifier = modifier
-            .fillMaxSize()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
-            .clickable { clickOnRow() }) {
+            .clickable { clickOnRow() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.small_spacer))
+    ) {
 
-        // Create references for the composable to constrain
-        val (favorite, name, specie, characterIcon) = createRefs()
+        AsyncImage(
+            modifier = Modifier
+                .height(80.dp)
+                .width(80.dp),
+            error = debugPlaceholder(R.drawable.ic_launcher_foreground),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(character.image).crossfade(true).build(),
+            contentDescription = character.name,
+            contentScale = ContentScale.Crop
+        )
 
         Text(
             modifier = Modifier
-                .constrainAs(name) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                    end.linkTo(favorite.start, margin = 16.dp)
-                    bottom.linkTo(characterIcon.top, margin = 16.dp)
-                    width = Dimension.fillToConstraints
-                },
+                .weight(1f)
+                .padding(dimensionResource(R.dimen.padding_small)),
             text = character.name,
+            color = MaterialTheme.typography.titleLarge.color,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.titleLarge,
@@ -73,59 +80,31 @@ fun CharacterItem(
                 Icons.Default.FavoriteBorder,
             contentDescription = stringResource(R.string.favourite_character),
             modifier = Modifier
-                .constrainAs(favorite) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                    width = Dimension.fillToConstraints
-                }
+                .padding(end = dimensionResource(R.dimen.padding_medium))
+                .height(30.dp)
+                .width(30.dp)
                 .clickable {
                     onFavoriteAction()
                 },
-            tint = Color.Black
-        )
-        AsyncImage(
-            modifier = Modifier
-                .height(80.dp)
-                .width(80.dp)
-                .constrainAs(characterIcon) {
-                    top.linkTo(name.bottom, margin = 8.dp)
-                    end.linkTo(specie.start, margin = 8.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                },
-            error = debugPlaceholder(R.drawable.ic_launcher_foreground),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(character.image).crossfade(true).build(),
-            contentDescription = character.name,
-            contentScale = ContentScale.Crop
-        )
-
-        Text(
-            color = Color.DarkGray,
-            modifier = Modifier.constrainAs(specie) {
-                top.linkTo(name.bottom, margin = 8.dp)
-                bottom.linkTo(characterIcon.bottom)
-                start.linkTo(characterIcon.end)
-                end.linkTo(parent.end, margin = 16.dp)
-                width = Dimension.fillToConstraints
-            },
-            text = character.species,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleMedium
+            tint = MaterialTheme.colorScheme.outline
         )
 
     }
 
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
-@Preview(showBackground = true, widthDp = 600, heightDp = 200)
+@Preview(
+    showBackground = true,
+    widthDp = 600,
+    heightDp = 200,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun CharacterItemPreview() {
 
     RickAndMortyComposeLayout {
 
         CharacterItem(
-            modifier = Modifier.fillMaxWidth(),
             clickOnRow = {},
             onFavoriteAction = {},
             character = CharacterDomain(

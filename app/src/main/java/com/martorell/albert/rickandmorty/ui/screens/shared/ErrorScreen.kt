@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.martorell.albert.data.CustomError
 import com.martorell.albert.rickandmorty.R
+import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
 
 @Composable
 fun <T> ErrorScreen(
@@ -78,31 +79,35 @@ fun <T> ErrorScreen(
 @Preview(showBackground = true)
 fun PreviewErrorScreen() {
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.Warning,
-            contentDescription = "Missatge d'error",
-            modifier = Modifier.size(128.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Text(
-            modifier = Modifier.padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp
-            ),
-            text = "Missatge d'error per veure l'amplada del text a la pantalla",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
-        )
+    RickAndMortyComposeLayout {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = "Missatge d'error",
+                modifier = Modifier.size(128.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
+            Text(
+                modifier = Modifier.padding(
+                    start = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium),
+                    top = dimensionResource(R.dimen.padding_medium)
 
-        Spacer(Modifier.height(dimensionResource(R.dimen.standard_height)))
-        Button(onClick = {}) {
-            Text(text = "Try again")
+                ),
+                text = "Missatge d'error per veure l'amplada del text a la pantalla",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(Modifier.height(dimensionResource(R.dimen.standard_height)))
+            Button(onClick = {}) {
+                Text(text = "Try again")
+            }
+
         }
 
     }
