@@ -20,7 +20,6 @@ roomVer = "2.7.2"
 coilVersion = "3.1.0"
 javaxInjectVersion = "1"
 kotlinCoroutinesVer = "1.10.2"
-constraintVersion = "1.1.1"
 arrowVer = "2.1.0"
 pagingVer = "3.3.6"
 
@@ -55,14 +54,11 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVer" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVer" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "roomVer" }
-
 #Coil
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilVersion" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilVersion" }
 #Coroutines
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinCoroutinesVer" }
-#Constraint layout
-constraint-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintVersion" }
 #Either
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowVer" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrowVer" }
