@@ -32,7 +32,7 @@ import androidx.paging.compose.itemKey
 import com.martorell.albert.domain.characters.app.CharacterDomain
 import com.martorell.albert.rickandmorty.R
 import com.martorell.albert.rickandmorty.ui.RickAndMortyComposeLayout
-import com.martorell.albert.rickandmorty.ui.navigation.shared.TopAppBarCustom
+import com.martorell.albert.rickandmorty.ui.navigation.TopAppBarCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.CircularProgressIndicatorCustom
 import com.martorell.albert.rickandmorty.ui.screens.shared.ErrorScreen
 import com.martorell.albert.rickandmorty.ui.screens.shared.SnackBarCustom
@@ -83,7 +83,7 @@ fun CharactersListContent(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(scrollState)
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    var mediatorState = lazyPagingItems.loadState.mediator
+    val mediatorState = lazyPagingItems.loadState.mediator
 
     RickAndMortyComposeLayout {
 
